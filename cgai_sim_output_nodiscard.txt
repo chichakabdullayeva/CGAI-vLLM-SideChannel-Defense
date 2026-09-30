@@ -1,0 +1,50 @@
+[micro] Python HMAC-SHA256 key derivation: 1.75 us (= 0.0053% of the 32.8 ms cached TTFT)
+
+=== EXPERIMENT 1: benign traffic, 300s, seeds [7, 11, 23], jitter U(0,120) ms ===
+
+--- cache = 12000 blocks ---
+seed 7: baseline mean TTFT 85.11 ms over 4198 requests (first 0s discarded)
+  root_salt      mean   88.51 ms  overhead   4.00%  (jitter  0.00% + cache/queue  4.00%)  p99  14.42%  flagged tenants: -
+  boundary_salt  mean   85.11 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: -
+  cgai_legacy    mean  109.03 ms  overhead  28.11%  (jitter 28.11% + cache/queue  0.00%)  p99  10.55%  flagged tenants: ['cls-0', 'cls-1', 'eval-0']
+  cgai_refined   mean   85.25 ms  overhead   0.17%  (jitter  0.17% + cache/queue  0.00%)  p99   0.14%  flagged tenants: ['eval-0']
+seed 11: baseline mean TTFT 100.24 ms over 4284 requests (first 0s discarded)
+  root_salt      mean  101.34 ms  overhead   1.09%  (jitter  0.00% + cache/queue  1.09%)  p99   0.00%  flagged tenants: -
+  boundary_salt  mean  100.24 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: -
+  cgai_legacy    mean  123.96 ms  overhead  23.66%  (jitter 23.66% + cache/queue  0.00%)  p99   7.17%  flagged tenants: ['cls-0', 'cls-1', 'eval-0']
+  cgai_refined   mean  100.46 ms  overhead   0.22%  (jitter  0.22% + cache/queue -0.00%)  p99   0.00%  flagged tenants: ['eval-0']
+seed 23: baseline mean TTFT 85.79 ms over 4227 requests (first 0s discarded)
+  root_salt      mean   87.15 ms  overhead   1.58%  (jitter  0.00% + cache/queue  1.58%)  p99   0.21%  flagged tenants: -
+  boundary_salt  mean   85.79 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: -
+  cgai_legacy    mean  108.96 ms  overhead  27.01%  (jitter 27.01% + cache/queue -0.00%)  p99  11.78%  flagged tenants: ['cls-0', 'cls-1', 'eval-0']
+  cgai_refined   mean   86.01 ms  overhead   0.25%  (jitter  0.25% + cache/queue -0.00%)  p99   0.00%  flagged tenants: ['eval-0']
+
+  MEAN over seeds [min..max]:
+  config                      overhead%  FPR cls  FPR eval  FPR chat/rag  ovh cls%  ovh eval%  watcher us/req  +sync%
+  root_salt         2.22 [  1.09..  4.00]    0.00%     0.00%         0.00%     2.37      2.16            0.2   0.00
+  boundary_salt     0.00 [  0.00..  0.00]    0.00%     0.00%         0.00%     0.00      0.00            0.2   0.00
+  cgai_legacy      26.26 [ 23.66.. 28.11]   90.83%    97.65%         0.00%    57.35     82.79            7.1   0.01
+  cgai_refined      0.21 [  0.17..  0.25]    0.00%     5.14%         0.00%     0.00      3.77            1.2   0.00
+  FPR = fraction of that class's requests that received Tier-C jitter. '+sync%' = extra TTFT if the pure-Python watcher ran in-path.
+
+=== EXPERIMENT 2: active probing, 90s warm-up, 1 trials per cell, cache 12000, chance = 1.6% ===
+attacker probes are non-inserting (generous to attacker); 'clean' = median probes sent before first jitter
+  config         attacker           ASR    95% Wilson CI  flagged  clean probes  benign jittered
+  none_attack    naive           100.0% [ 20.7,100.0]%   0/1             nan            0.00%
+  none_attack    adaptive_min4   100.0% [ 20.7,100.0]%   0/1             nan            0.00%
+  none_attack    mimic_poison    100.0% [ 20.7,100.0]%   0/1             nan            0.00%
+  none_attack    slow_low        100.0% [ 20.7,100.0]%   0/1             nan            0.00%
+  bc_only        naive           100.0% [ 20.7,100.0]%   1/1            14.0            0.00%
+  bc_only        adaptive_min4   100.0% [ 20.7,100.0]%   1/1            14.0            0.00%
+  bc_only        mimic_poison    100.0% [ 20.7,100.0]%   0/1             nan            0.00%
+  bc_only        slow_low        100.0% [ 20.7,100.0]%   0/1             nan            0.00%
+  boundary_salt  naive             0.0% [  0.0, 79.3]%   0/1             nan            0.00%
+  boundary_salt  adaptive_min4     0.0% [  0.0, 79.3]%   0/1             nan            0.00%
+  boundary_salt  mimic_poison      0.0% [  0.0, 79.3]%   0/1             nan            0.00%
+  boundary_salt  slow_low          0.0% [  0.0, 79.3]%   0/1             nan            0.00%
+  cgai_refined   naive             0.0% [  0.0, 79.3]%   1/1            13.0            0.00%
+  cgai_refined   adaptive_min4     0.0% [  0.0, 79.3]%   1/1            13.0            0.00%
+  cgai_refined   mimic_poison      0.0% [  0.0, 79.3]%   0/1             nan            0.00%
+  cgai_refined   slow_low          0.0% [  0.0, 79.3]%   0/1             nan            0.00%
+
+[done in 10s]

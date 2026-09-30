@@ -1,0 +1,53 @@
+[micro] Python HMAC-SHA256 key derivation: 1.76 us (= 0.0054% of the 32.8 ms cached TTFT)
+
+=== EXPERIMENT 1: benign traffic, 300s, seeds [7, 11, 23], jitter U(0,120) ms ===
+
+--- cache = 12000 blocks ---
+seed 7: baseline mean TTFT 84.52 ms over 3352 requests (first 60s discarded)
+  root_salt      mean   87.61 ms  overhead   3.66%  (jitter  0.00% + cache/queue  3.66%)  p99  16.64%  flagged tenants: -
+  boundary_salt  mean   84.52 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: -
+  cgai_legacy    mean  108.97 ms  overhead  28.93%  (jitter 28.93% + cache/queue -0.00%)  p99   9.10%  flagged tenants: ['cls-0', 'cls-1', 'eval-0']
+  cgai_refined   mean   84.52 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: ['eval-0']
+seed 11: baseline mean TTFT 96.94 ms over 3404 requests (first 60s discarded)
+  root_salt      mean   97.59 ms  overhead   0.66%  (jitter  0.00% + cache/queue  0.66%)  p99   0.00%  flagged tenants: -
+  boundary_salt  mean   96.94 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: -
+  cgai_legacy    mean  121.59 ms  overhead  25.42%  (jitter 25.42% + cache/queue -0.00%)  p99   5.59%  flagged tenants: ['cls-0', 'cls-1', 'eval-0']
+  cgai_refined   mean   96.94 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: ['eval-0']
+seed 23: baseline mean TTFT 83.73 ms over 3411 requests (first 60s discarded)
+  root_salt      mean   84.08 ms  overhead   0.41%  (jitter  0.00% + cache/queue  0.41%)  p99   0.00%  flagged tenants: -
+  boundary_salt  mean   83.73 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: -
+  cgai_legacy    mean  107.37 ms  overhead  28.23%  (jitter 28.23% + cache/queue  0.00%)  p99  11.96%  flagged tenants: ['cls-0', 'cls-1', 'eval-0']
+  cgai_refined   mean   83.73 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: ['eval-0']
+
+  MEAN over seeds [min..max]:
+  config                      overhead%  FPR cls  FPR eval  FPR chat/rag  ovh cls%  ovh eval%  watcher us/req  +sync%
+  root_salt         1.58 [  0.41..  3.66]    0.00%     0.00%         0.00%     1.69      1.45            0.2   0.00
+  boundary_salt     0.00 [  0.00..  0.00]    0.00%     0.00%         0.00%     0.00      0.00            0.2   0.00
+  cgai_legacy      27.53 [ 25.42.. 28.93]   91.72%   100.00%         0.00%    58.75     91.15            7.4   0.01
+  cgai_refined      0.00 [  0.00..  0.00]    0.00%     0.00%         0.00%     0.00      0.00            1.2   0.00
+  FPR = fraction of that class's requests that received Tier-C jitter. '+sync%' = extra TTFT if the pure-Python watcher ran in-path.
+
+--- cache = 4000 blocks ---
+seed 7: baseline mean TTFT 139.77 ms over 3352 requests (first 60s discarded)
+  root_salt      mean  154.51 ms  overhead  10.55%  (jitter  0.00% + cache/queue 10.55%)  p99  13.05%  flagged tenants: -
+  boundary_salt  mean  139.77 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: -
+  cgai_legacy    mean  164.22 ms  overhead  17.50%  (jitter 17.50% + cache/queue  0.00%)  p99   5.50%  flagged tenants: ['cls-0', 'cls-1', 'eval-0']
+  cgai_refined   mean  144.13 ms  overhead   3.13%  (jitter  3.13% + cache/queue -0.00%)  p99   0.00%  flagged tenants: ['eval-0']
+seed 11: baseline mean TTFT 183.62 ms over 3404 requests (first 60s discarded)
+  root_salt      mean  218.78 ms  overhead  19.15%  (jitter  0.00% + cache/queue 19.15%)  p99  29.98%  flagged tenants: -
+  boundary_salt  mean  183.62 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: -
+  cgai_legacy    mean  208.26 ms  overhead  13.42%  (jitter 13.42% + cache/queue  0.00%)  p99   2.50%  flagged tenants: ['cls-0', 'cls-1', 'eval-0']
+  cgai_refined   mean  187.79 ms  overhead   2.27%  (jitter  2.27% + cache/queue -0.00%)  p99   0.00%  flagged tenants: ['eval-0']
+seed 23: baseline mean TTFT 148.02 ms over 3411 requests (first 60s discarded)
+  root_salt      mean  165.74 ms  overhead  11.97%  (jitter  0.00% + cache/queue 11.97%)  p99  15.63%  flagged tenants: -
+  boundary_salt  mean  148.02 ms  overhead   0.00%  (jitter  0.00% + cache/queue  0.00%)  p99   0.00%  flagged tenants: -
+  cgai_legacy    mean  171.66 ms  overhead  15.97%  (jitter 15.97% + cache/queue -0.00%)  p99   4.30%  flagged tenants: ['cls-0', 'cls-1', 'eval-0']
+  cgai_refined   mean  152.30 ms  overhead   2.89%  (jitter  2.89% + cache/queue -0.00%)  p99   0.06%  flagged tenants: ['eval-0']
+
+  MEAN over seeds [min..max]:
+  config                      overhead%  FPR cls  FPR eval  FPR chat/rag  ovh cls%  ovh eval%  watcher us/req  +sync%
+  root_salt        13.89 [ 10.55.. 19.15]    0.00%     0.00%         0.00%    15.85     10.60            0.2   0.00
+  boundary_salt     0.00 [  0.00..  0.00]    0.00%     0.00%         0.00%     0.00      0.00            0.3   0.00
+  cgai_legacy      15.63 [ 13.42.. 17.50]   91.72%   100.00%         0.00%    32.19     42.86            7.3   0.00
+  cgai_refined      2.76 [  2.27..  3.13]    0.00%   100.00%         0.00%     0.00     42.28            1.1   0.00
+  FPR = fraction of that class's requests that received Tier-C jitter. '+sync%' = extra TTFT if the pure-Python watcher ran in-path.

@@ -1,0 +1,25 @@
+[micro] Python HMAC-SHA256 key derivation: 1.77 us (= 0.0054% of the 32.8 ms cached TTFT)
+
+=== EXPERIMENT 1: benign traffic, 300s, seeds [7, 11], jitter U(0,120) ms ===
+
+=== EXPERIMENT 2: active probing, 90s warm-up, 60 trials per cell, cache 12000, chance = 1.6% ===
+attacker probes are non-inserting (generous to attacker); 'clean' = median probes sent before first jitter
+  config         attacker           ASR    95% Wilson CI  flagged  clean probes  benign jittered
+  none_attack    naive            46.7% [ 34.6, 59.1]%   0/60            nan            0.00%
+  none_attack    adaptive_min4    66.7% [ 54.1, 77.3]%   0/60            nan            0.00%
+  none_attack    mimic_poison     46.7% [ 34.6, 59.1]%   0/60            nan            0.00%
+  none_attack    slow_low         30.0% [ 19.9, 42.5]%   0/60            nan            0.00%
+  bc_only        naive            30.0% [ 19.9, 42.5]%  60/60           13.0            0.00%
+  bc_only        adaptive_min4    43.3% [ 31.6, 55.9]%  60/60           13.0            0.00%
+  bc_only        mimic_poison     46.7% [ 34.6, 59.1]%   0/60            nan            0.00%
+  bc_only        slow_low         30.0% [ 19.9, 42.5]%   0/60            nan            0.00%
+  boundary_salt  naive             0.0% [  0.0,  6.0]%   0/60            nan            0.00%
+  boundary_salt  adaptive_min4     0.0% [  0.0,  6.0]%   0/60            nan            0.00%
+  boundary_salt  mimic_poison      0.0% [  0.0,  6.0]%   0/60            nan            0.00%
+  boundary_salt  slow_low          3.3% [  0.9, 11.4]%   0/60            nan            0.00%
+  cgai_refined   naive             0.0% [  0.0,  6.0]%  60/60           13.0            0.00%
+  cgai_refined   adaptive_min4     0.0% [  0.0,  6.0]%  60/60           13.0            0.00%
+  cgai_refined   mimic_poison      0.0% [  0.0,  6.0]%   0/60            nan            0.00%
+  cgai_refined   slow_low          3.3% [  0.9, 11.4]%   0/60            nan            0.00%
+
+[done in 158s]
